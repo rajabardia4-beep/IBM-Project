@@ -1,6 +1,19 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
+const api = axios.create({
+    baseURL: import.meta.env.VITE_API_URL,
+});
+
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+});
 
 import {
     Box,
@@ -37,7 +50,7 @@ function Subjects() {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}`/api/subjects,
+                `${import.meta.env.VITE_API_URL}` / api / subjects,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -84,7 +97,7 @@ function Subjects() {
                 localStorage.getItem("token");
 
             const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}`/api/subjects,
+                `${import.meta.env.VITE_API_URL}` / api / subjects,
                 {
                     name,
                     description,
@@ -207,7 +220,7 @@ function Subjects() {
             setSubjects((prev) =>
                 prev.map((subject) =>
                     subject._id ===
-                    editingSubject._id
+                        editingSubject._id
                         ? response.data
                         : subject
                 )
