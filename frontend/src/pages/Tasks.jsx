@@ -52,14 +52,7 @@ function Tasks() {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/api/tasks`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await api.get("/api/tasks");
 
             setTasks(response.data);
 
@@ -80,14 +73,7 @@ function Tasks() {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/api/tasks`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await api.get("/api/subjects");
 
             setSubjects(response.data);
 
@@ -139,20 +125,14 @@ function Tasks() {
 
             const token =
                 localStorage.getItem("token");
-
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/tasks`, {
-                title,
-                description,
-                priority,
-                dueDate: dueDate || null,
-                subjectId,
-            },
+            const response = await api.post(
+                "/api/tasks",
                 {
-                    headers: {
-                        Authorization:
-                            `Bearer ${token}`,
-                    },
+                    title,
+                    description,
+                    priority,
+                    dueDate: dueDate || null,
+                    subjectId,
                 }
             );
 
@@ -202,19 +182,14 @@ function Tasks() {
             const token =
                 localStorage.getItem("token");
 
-            const response = await axios.put(
-                `${import.meta.env.VITE_API_URL}/api/tasks/${editingTask._id}`, {
-                title,
-                description,
-                priority,
-                dueDate: dueDate || null,
-                subjectId,
-            },
+            const response = await api.put(
+                `/api/tasks/${editingTask._id}`,
                 {
-                    headers: {
-                        Authorization:
-                            `Bearer ${token}`,
-                    },
+                    title,
+                    description,
+                    priority,
+                    dueDate: dueDate || null,
+                    subjectId,
                 }
             );
 
@@ -294,15 +269,10 @@ function Tasks() {
                     ? "pending"
                     : "completed";
 
-            const response = await axios.put(
-                `${import.meta.env.VITE_API_URL}/api/tasks/${task._id}`, {
-                status: newStatus,
-            },
+            const response = await api.put(
+                `/api/tasks/${task._id}`,
                 {
-                    headers: {
-                        Authorization:
-                            `Bearer ${token}`,
-                    },
+                    status: newStatus,
                 }
             );
 
@@ -346,13 +316,8 @@ function Tasks() {
             const token =
                 localStorage.getItem("token");
 
-            await axios.delete(
-                `${import.meta.env.VITE_API_URL}/api/tasks/${id}`, {
-                headers: {
-                    Authorization:
-                        `Bearer ${token}`,
-                },
-            }
+            await api.delete(
+                `/api/tasks/${id}`
             );
 
             setTasks((prev) =>
