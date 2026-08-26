@@ -26,12 +26,12 @@ function Subjects() {
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [editingSubject, setEditingSubject] = useState(null);
+
+    const [editingSubject, setEditingSubject] =
+        useState(null);
 
 
 
-
-    
     const fetchSubjects = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -46,24 +46,32 @@ function Subjects() {
             );
 
             setSubjects(response.data);
+
         } catch (error) {
-            console.error("Failed to load subjects:", error);
+            console.error(
+                "Failed to load subjects:",
+                error
+            );
 
             alert(
                 error.response?.data?.message ||
                 "Failed to load subjects"
             );
+
         } finally {
             setLoading(false);
         }
     };
 
-    
+
     useEffect(() => {
         fetchSubjects();
     }, []);
 
+
+
     const handleAddSubject = async () => {
+
         if (!name.trim()) {
             alert("Please enter a subject name");
             return;
@@ -72,7 +80,8 @@ function Subjects() {
         try {
             setSaving(true);
 
-            const token = localStorage.getItem("token");
+            const token =
+                localStorage.getItem("token");
 
             const response = await axios.post(
                 "http://localhost:5000/api/subjects",
@@ -83,7 +92,8 @@ function Subjects() {
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization:
+                            `Bearer ${token}`,
                     },
                 }
             );
@@ -93,57 +103,69 @@ function Subjects() {
                 ...prev,
             ]);
 
-            setName("");
-            setDescription("");
-            setColor("blue");
+            resetForm();
 
             setIsOpen(false);
 
         } catch (error) {
-            console.error("Add subject error:", error);
+            console.error(
+                "Add subject error:",
+                error
+            );
 
             alert(
                 error.response?.data?.message ||
                 "Failed to create subject"
             );
+
         } finally {
             setSaving(false);
         }
     };
 
+
+
     const handleDeleteSubject = async (id) => {
-        const confirmDelete = window.confirm(
-            "Are you sure you want to delete this subject?"
-        );
+
+        const confirmDelete =
+            window.confirm(
+                "Are you sure you want to delete this subject?"
+            );
 
         if (!confirmDelete) {
             return;
         }
 
         try {
-            const token = localStorage.getItem("token");
-
-            console.log("Deleting subject:", id);
+            const token =
+                localStorage.getItem("token");
 
             await axios.delete(
                 `http://localhost:5000/api/subjects/${id}`,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization:
+                            `Bearer ${token}`,
                     },
                 }
             );
 
             setSubjects((prev) =>
                 prev.filter(
-                    (subject) => subject._id !== id
+                    (subject) =>
+                        subject._id !== id
                 )
             );
 
-            alert("Subject deleted successfully!");
+            alert(
+                "Subject deleted successfully!"
+            );
 
         } catch (error) {
-            console.error("Delete error:", error);
+            console.error(
+                "Delete error:",
+                error
+            );
 
             alert(
                 error.response?.data?.message ||
@@ -152,7 +174,10 @@ function Subjects() {
         }
     };
 
+
+
     const handleUpdateSubject = async () => {
+
         if (!name.trim()) {
             alert("Please enter a subject name");
             return;
@@ -161,7 +186,8 @@ function Subjects() {
         try {
             setSaving(true);
 
-            const token = localStorage.getItem("token");
+            const token =
+                localStorage.getItem("token");
 
             const response = await axios.put(
                 `http://localhost:5000/api/subjects/${editingSubject._id}`,
@@ -172,196 +198,468 @@ function Subjects() {
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization:
+                            `Bearer ${token}`,
                     },
                 }
             );
 
             setSubjects((prev) =>
                 prev.map((subject) =>
-                    subject._id === editingSubject._id
+                    subject._id ===
+                    editingSubject._id
                         ? response.data
                         : subject
                 )
             );
 
-            setName("");
-            setDescription("");
-            setColor("blue");
-
-            setEditingSubject(null);
+            resetForm();
 
             setIsOpen(false);
 
         } catch (error) {
-            console.error("Update subject error:", error);
+            console.error(
+                "Update subject error:",
+                error
+            );
 
             alert(
                 error.response?.data?.message ||
                 "Failed to update subject"
             );
+
         } finally {
             setSaving(false);
         }
     };
 
+
+
+    const resetForm = () => {
+        setName("");
+        setDescription("");
+        setColor("blue");
+        setEditingSubject(null);
+    };
+
+
+
+    const openAddDialog = () => {
+        resetForm();
+        setIsOpen(true);
+    };
+
+
+
+    const openEditDialog = (subject) => {
+
+        setEditingSubject(subject);
+
+        setName(subject.name);
+
+        setDescription(
+            subject.description || ""
+        );
+
+        setColor(
+            subject.color || "blue"
+        );
+
+        setIsOpen(true);
+    };
+
+
     return (
         <Box
             minH="100vh"
-            bg="gray.50"
+            bg="linear-gradient(135deg, #f8f7ff 0%, #eef2ff 100%)"
         >
 
             <Navbar />
 
+
+
             <Box
-                p={{
+                maxW="1250px"
+                mx="auto"
+                px={{
                     base: "20px",
-                    md: "30px",
-                    lg: "40px",
+                    md: "35px",
+                    lg: "45px",
+                }}
+                py={{
+                    base: "30px",
+                    md: "40px",
                 }}
             >
 
+
                 <Flex
                     justify="space-between"
-                    align="center"
-                    mb="30px"
+                    align={{
+                        base: "flex-start",
+                        md: "center",
+                    }}
+                    direction={{
+                        base: "column",
+                        md: "row",
+                    }}
+                    gap="20px"
+                    mb="35px"
                 >
+
                     <Box>
-                        <Heading size="xl">
-                            📚 My Subjects
+
+                        <Text
+                            color="purple.600"
+                            fontWeight="bold"
+                            mb="5px"
+                        >
+                            📚 YOUR STUDY SPACE
+                        </Text>
+
+                        <Heading
+                            fontSize={{
+                                base: "30px",
+                                md: "40px",
+                            }}
+                        >
+                            My Subjects
+                        </Heading>
+
+                        <Text
+                            color="gray.600"
+                            mt="8px"
+                        >
+                            Organize everything you're
+                            learning in one place.
+                        </Text>
+
+                    </Box>
+
+
+                    <Button
+                        size="lg"
+                        colorPalette="purple"
+                        onClick={openAddDialog}
+                    >
+                        + Add Subject
+                    </Button>
+
+                </Flex>
+
+
+
+                {!loading &&
+                    subjects.length > 0 && (
+
+                        <Box
+                            bg="white"
+                            p="18px 22px"
+                            mb="25px"
+                            borderRadius="15px"
+                            boxShadow="sm"
+                        >
+
+                            <Flex
+                                justify="space-between"
+                                align="center"
+                            >
+
+                                <Text color="gray.500">
+                                    You are currently
+                                    studying
+                                </Text>
+
+                                <Text
+                                    fontWeight="bold"
+                                    color="purple.600"
+                                    fontSize="lg"
+                                >
+                                    {subjects.length}{" "}
+                                    {subjects.length === 1
+                                        ? "Subject"
+                                        : "Subjects"}
+                                </Text>
+
+                            </Flex>
+
+                        </Box>
+
+                    )}
+
+
+
+                {loading ? (
+
+                    <Box
+                        bg="white"
+                        p="50px"
+                        borderRadius="20px"
+                        textAlign="center"
+                        boxShadow="sm"
+                    >
+
+                        <Text fontSize="40px">
+                            📚
+                        </Text>
+
+                        <Text
+                            mt="10px"
+                            color="gray.500"
+                        >
+                            Loading your subjects...
+                        </Text>
+
+                    </Box>
+
+                ) : subjects.length === 0 ? (
+
+
+                    <Box
+                        bg="white"
+                        p={{
+                            base: "40px 20px",
+                            md: "70px",
+                        }}
+                        borderRadius="25px"
+                        textAlign="center"
+                        boxShadow="sm"
+                    >
+
+                        <Text fontSize="60px">
+                            📚
+                        </Text>
+
+                        <Heading
+                            size="md"
+                            mt="15px"
+                        >
+                            No subjects yet
                         </Heading>
 
                         <Text
                             color="gray.500"
-                            mt="5px"
+                            mt="8px"
+                            maxW="450px"
+                            mx="auto"
                         >
-                            Manage your study subjects
+                            Add your first subject and
+                            start organizing your study
+                            journey.
                         </Text>
+
+                        <Button
+                            mt="25px"
+                            colorPalette="purple"
+                            onClick={openAddDialog}
+                        >
+                            + Add Your First Subject
+                        </Button>
+
                     </Box>
 
-                    <Button
-                        colorPalette="blue"
-                        onClick={() => setIsOpen(true)}
-                    >
-                        + Add Subject
-                    </Button>
-                </Flex>
-
-
-                {loading ? (
-                    <Text>
-                        Loading subjects...
-                    </Text>
-                ) : subjects.length === 0 ? (
-                    <Text color="gray.500">
-                        You don't have any subjects yet.
-                    </Text>
                 ) : (
+
+
                     <SimpleGrid
                         columns={{
                             base: 1,
                             md: 2,
                             lg: 3,
                         }}
-                        gap="20px"
+                        gap="22px"
                     >
+
                         {subjects.map((subject) => (
+
                             <Box
                                 key={subject._id}
                                 bg="white"
-                                p="25px"
-                                borderRadius="12px"
-                                shadow="sm"
-                                borderTop="5px solid"
-                                borderColor={`${subject.color}.500`}
+                                borderRadius="20px"
+                                overflow="hidden"
+                                boxShadow="md"
+                                transition="0.2s"
+                                _hover={{
+                                    transform:
+                                        "translateY(-5px)",
+                                    boxShadow: "xl",
+                                }}
                             >
-                                <Heading size="md">
-                                    {subject.name}
-                                </Heading>
 
-                                <Text
-                                    mt="10px"
-                                    color="gray.500"
-                                >
-                                    {subject.description ||
-                                        "No description"}
-                                </Text>
 
-                                <Flex
-                                    justify="space-between"
-                                    align="center"
-                                    mt="15px"
-                                >
-                                    <Text
-                                        fontSize="sm"
-                                        color={`${subject.color}.500`}
+                                <Box
+                                    h="8px"
+                                    bg={`${subject.color}.500`}
+                                />
+
+
+                                <Box p="25px">
+
+
+                                    <Flex
+                                        justify="space-between"
+                                        align="start"
                                     >
-                                        📖 Subject
+
+                                        <Box
+                                            w="52px"
+                                            h="52px"
+                                            borderRadius="15px"
+                                            bg={`${subject.color}.50`}
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                        >
+
+                                            <Text fontSize="25px">
+                                                📖
+                                            </Text>
+
+                                        </Box>
+
+
+                                        <Text
+                                            fontSize="sm"
+                                            fontWeight="bold"
+                                            color={`${subject.color}.500`}
+                                        >
+                                            {subject.color}
+                                        </Text>
+
+                                    </Flex>
+
+
+
+                                    <Heading
+                                        size="md"
+                                        mt="20px"
+                                    >
+                                        {subject.name}
+                                    </Heading>
+
+
+
+                                    <Text
+                                        mt="10px"
+                                        color="gray.500"
+                                        minH="45px"
+                                        lineHeight="1.6"
+                                    >
+                                        {subject.description ||
+                                            "No description added yet."}
                                     </Text>
 
-                                    <Button
-                                        size="sm"
-                                        colorPalette="blue"
-                                        variant="outline"
-                                        onClick={() => {
-                                            setEditingSubject(subject);
 
-                                            setName(subject.name);
-                                            setDescription(subject.description || "");
-                                            setColor(subject.color || "blue");
 
-                                            setIsOpen(true);
-                                        }}
+                                    <Flex
+                                        justify="space-between"
+                                        align="center"
+                                        mt="25px"
+                                        pt="18px"
+                                        borderTop="1px solid"
+                                        borderColor="gray.100"
+                                        gap="10px"
                                     >
-                                        ✏️ Edit
-                                    </Button>
 
-                                    <Button
-                                        size="sm"
-                                        colorPalette="red"
-                                        variant="outline"
-                                        onClick={() =>
-                                            handleDeleteSubject(
-                                                subject._id
-                                            )
-                                        }
-                                    >
-                                        🗑️ Delete
-                                    </Button>
-                                </Flex>
+                                        <Text
+                                            fontSize="sm"
+                                            color="gray.500"
+                                        >
+                                            📚 Subject
+                                        </Text>
+
+
+                                        <Flex gap="8px">
+
+                                            <Button
+                                                size="sm"
+                                                colorPalette="purple"
+                                                variant="outline"
+                                                onClick={() =>
+                                                    openEditDialog(
+                                                        subject
+                                                    )
+                                                }
+                                            >
+                                                ✏️ Edit
+                                            </Button>
+
+
+                                            <Button
+                                                size="sm"
+                                                colorPalette="red"
+                                                variant="outline"
+                                                onClick={() =>
+                                                    handleDeleteSubject(
+                                                        subject._id
+                                                    )
+                                                }
+                                            >
+                                                🗑️
+                                            </Button>
+
+                                        </Flex>
+
+                                    </Flex>
+
+                                </Box>
+
                             </Box>
+
                         ))}
+
                     </SimpleGrid>
+
                 )}
+
 
 
                 <Dialog.Root
                     open={isOpen}
-                    onOpenChange={(e) =>
-                        setIsOpen(e.open)
-                    }
+                    onOpenChange={(e) => {
+
+                        setIsOpen(e.open);
+
+                        if (!e.open) {
+                            resetForm();
+                        }
+
+                    }}
                 >
+
                     <Dialog.Backdrop />
 
                     <Dialog.Positioner>
-                        <Dialog.Content>
+
+                        <Dialog.Content
+                            borderRadius="20px"
+                        >
 
                             <Dialog.Header>
-                                <Dialog.Title>
+
+                                <Dialog.Title
+                                    fontSize="xl"
+                                >
                                     {editingSubject
-                                        ? "Edit Subject"
-                                        : "Add Subject"}
+                                        ? "✏️ Edit Subject"
+                                        : "📚 Add Subject"}
                                 </Dialog.Title>
+
                             </Dialog.Header>
+
 
                             <Dialog.Body>
 
+
                                 <Field.Root>
+
                                     <Field.Label>
                                         Subject Name
                                     </Field.Label>
 
                                     <Input
+                                        size="lg"
                                         placeholder="e.g. Python"
                                         value={name}
                                         onChange={(e) =>
@@ -370,10 +668,13 @@ function Subjects() {
                                             )
                                         }
                                     />
+
                                 </Field.Root>
 
 
+
                                 <Field.Root mt="20px">
+
                                     <Field.Label>
                                         Description
                                     </Field.Label>
@@ -387,15 +688,19 @@ function Subjects() {
                                             )
                                         }
                                     />
+
                                 </Field.Root>
 
 
+
                                 <Field.Root mt="20px">
+
                                     <Field.Label>
                                         Color
                                     </Field.Label>
 
                                     <Input
+                                        size="lg"
                                         placeholder="blue"
                                         value={color}
                                         onChange={(e) =>
@@ -404,6 +709,17 @@ function Subjects() {
                                             )
                                         }
                                     />
+
+                                    <Text
+                                        fontSize="sm"
+                                        color="gray.500"
+                                        mt="5px"
+                                    >
+                                        Example: blue,
+                                        purple, green,
+                                        orange
+                                    </Text>
+
                                 </Field.Root>
 
                             </Dialog.Body>
@@ -413,15 +729,17 @@ function Subjects() {
 
                                 <Button
                                     variant="outline"
-                                    onClick={() =>
-                                        setIsOpen(false)
-                                    }
+                                    onClick={() => {
+                                        setIsOpen(false);
+                                        resetForm();
+                                    }}
                                 >
                                     Cancel
                                 </Button>
 
+
                                 <Button
-                                    colorPalette="blue"
+                                    colorPalette="purple"
                                     onClick={
                                         editingSubject
                                             ? handleUpdateSubject
@@ -437,10 +755,13 @@ function Subjects() {
                             </Dialog.Footer>
 
                         </Dialog.Content>
+
                     </Dialog.Positioner>
+
                 </Dialog.Root>
 
             </Box>
+
         </Box>
     );
 }

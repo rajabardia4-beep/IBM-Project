@@ -17,6 +17,25 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    googleId: {
+    type: String,
+    default: null,
+},
+
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    emailVerificationOTP: {
+      type: String,
+      default: null,
+    },
+
+    emailVerificationOTPExpires: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
