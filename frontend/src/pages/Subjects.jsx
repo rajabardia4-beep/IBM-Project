@@ -37,7 +37,7 @@ function Subjects() {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(
-                "http://localhost:5000/api/subjects",
+                `${import.meta.env.VITE_API_URL}`/api/subjects,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -84,7 +84,7 @@ function Subjects() {
                 localStorage.getItem("token");
 
             const response = await axios.post(
-                "http://localhost:5000/api/subjects",
+                `${import.meta.env.VITE_API_URL}`/api/subjects,
                 {
                     name,
                     description,
@@ -141,7 +141,7 @@ function Subjects() {
                 localStorage.getItem("token");
 
             await axios.delete(
-                `http://localhost:5000/api/subjects/${id}`,
+                `${import.meta.env.VITE_API_URL}/api/subjects/${id}`,
                 {
                     headers: {
                         Authorization:
@@ -190,7 +190,7 @@ function Subjects() {
                 localStorage.getItem("token");
 
             const response = await axios.put(
-                `http://localhost:5000/api/subjects/${editingSubject._id}`,
+                `${import.meta.env.VITE_API_URL}/api/subjects/${editingSubject._id}`,
                 {
                     name,
                     description,

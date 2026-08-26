@@ -40,7 +40,7 @@ function Tasks() {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(
-                "http://localhost:5000/api/tasks",
+                `${import.meta.env.VITE_API_URL}/api/tasks`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -68,7 +68,7 @@ function Tasks() {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(
-                "http://localhost:5000/api/subjects",
+                `${import.meta.env.VITE_API_URL}/api/tasks`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -128,14 +128,13 @@ function Tasks() {
                 localStorage.getItem("token");
 
             const response = await axios.post(
-                "http://localhost:5000/api/tasks",
-                {
-                    title,
-                    description,
-                    priority,
-                    dueDate: dueDate || null,
-                    subjectId,
-                },
+                `${import.meta.env.VITE_API_URL}/api/tasks`, {
+                title,
+                description,
+                priority,
+                dueDate: dueDate || null,
+                subjectId,
+            },
                 {
                     headers: {
                         Authorization:
@@ -191,14 +190,13 @@ function Tasks() {
                 localStorage.getItem("token");
 
             const response = await axios.put(
-                `http://localhost:5000/api/tasks/${editingTask._id}`,
-                {
-                    title,
-                    description,
-                    priority,
-                    dueDate: dueDate || null,
-                    subjectId,
-                },
+                `${import.meta.env.VITE_API_URL}/api/tasks/${editingTask._id}`, {
+                title,
+                description,
+                priority,
+                dueDate: dueDate || null,
+                subjectId,
+            },
                 {
                     headers: {
                         Authorization:
@@ -284,10 +282,9 @@ function Tasks() {
                     : "completed";
 
             const response = await axios.put(
-                `http://localhost:5000/api/tasks/${task._id}`,
-                {
-                    status: newStatus,
-                },
+                `${import.meta.env.VITE_API_URL}/api/tasks/${task._id}`, {
+                status: newStatus,
+            },
                 {
                     headers: {
                         Authorization:
@@ -337,13 +334,12 @@ function Tasks() {
                 localStorage.getItem("token");
 
             await axios.delete(
-                `http://localhost:5000/api/tasks/${id}`,
-                {
-                    headers: {
-                        Authorization:
-                            `Bearer ${token}`,
-                    },
-                }
+                `${import.meta.env.VITE_API_URL}/api/tasks/${id}`, {
+                headers: {
+                    Authorization:
+                        `Bearer ${token}`,
+                },
+            }
             );
 
             setTasks((prev) =>

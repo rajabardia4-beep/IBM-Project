@@ -22,7 +22,7 @@ function Dashboard() {
                 const token = localStorage.getItem("token");
 
                 const response = await axios.get(
-                    "http://localhost:5000/api/subjects",
+                    `${import.meta.env.VITE_API_URL}/api/subjects`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ function Dashboard() {
                 const token = localStorage.getItem("token");
 
                 const response = await axios.get(
-                    "http://localhost:5000/api/tasks",
+                    `${import.meta.env.VITE_API_URL}/api/tasks`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
