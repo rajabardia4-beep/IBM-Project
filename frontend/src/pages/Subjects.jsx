@@ -47,16 +47,7 @@ function Subjects() {
 
     const fetchSubjects = async () => {
         try {
-            const token = localStorage.getItem("token");
-
-            const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}` / api / subjects,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await api.get("/api/subjects");
 
             setSubjects(response.data);
 
@@ -93,21 +84,12 @@ function Subjects() {
         try {
             setSaving(true);
 
-            const token =
-                localStorage.getItem("token");
-
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}` / api / subjects,
+            const response = await api.post(
+                "/api/subjects",
                 {
                     name,
                     description,
                     color,
-                },
-                {
-                    headers: {
-                        Authorization:
-                            `Bearer ${token}`,
-                    },
                 }
             );
 
@@ -117,7 +99,6 @@ function Subjects() {
             ]);
 
             resetForm();
-
             setIsOpen(false);
 
         } catch (error) {
@@ -137,7 +118,6 @@ function Subjects() {
     };
 
 
-
     const handleDeleteSubject = async (id) => {
 
         const confirmDelete =
@@ -150,17 +130,8 @@ function Subjects() {
         }
 
         try {
-            const token =
-                localStorage.getItem("token");
-
-            await axios.delete(
-                `${import.meta.env.VITE_API_URL}/api/subjects/${id}`,
-                {
-                    headers: {
-                        Authorization:
-                            `Bearer ${token}`,
-                    },
-                }
+            await api.delete(
+                `/api/subjects/${id}`
             );
 
             setSubjects((prev) =>
@@ -188,7 +159,6 @@ function Subjects() {
     };
 
 
-
     const handleUpdateSubject = async () => {
 
         if (!name.trim()) {
@@ -199,35 +169,24 @@ function Subjects() {
         try {
             setSaving(true);
 
-            const token =
-                localStorage.getItem("token");
-
-            const response = await axios.put(
-                `${import.meta.env.VITE_API_URL}/api/subjects/${editingSubject._id}`,
+            const response = await api.put(
+                `/api/subjects/${editingSubject._id}`,
                 {
                     name,
                     description,
                     color,
-                },
-                {
-                    headers: {
-                        Authorization:
-                            `Bearer ${token}`,
-                    },
                 }
             );
 
             setSubjects((prev) =>
                 prev.map((subject) =>
-                    subject._id ===
-                        editingSubject._id
+                    subject._id === editingSubject._id
                         ? response.data
                         : subject
                 )
             );
 
             resetForm();
-
             setIsOpen(false);
 
         } catch (error) {
