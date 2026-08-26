@@ -1,11 +1,17 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
 
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
+    },
+
+    tls: {
+        rejectUnauthorized: false,
     },
 });
 
@@ -21,7 +27,7 @@ const sendOTPEmail = async (email, otp) => {
 
         html: `
             <div style="font-family: Arial, sans-serif; padding: 30px;">
-                
+
                 <h2 style="color: #6d28d9;">
                     📚 Study Planner
                 </h2>
