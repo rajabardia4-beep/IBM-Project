@@ -22,7 +22,7 @@ const sendReminderEmail = async (
             email
         );
 
-git status        await transporter.verify();
+       await transporter.verify();
 
         console.log(
             "✅ Gmail SMTP connection successful!"
