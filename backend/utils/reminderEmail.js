@@ -1,12 +1,12 @@
-const nodemailer = require("nodemailer");
 
-const transporter = nodemailer.createTransport({
-    host: "SMTP.gmail.com",
 
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-    },
+const { BrevoClient } = require("@getbrevo/brevo");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+const brevo = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
 });
 
 const sendReminderEmail = async (
@@ -14,18 +14,10 @@ const sendReminderEmail = async (
     task,
     subject
 ) => {
-
     try {
-
         console.log(
             "📧 Attempting to send reminder to:",
             email
-        );
-
-       await transporter.verify();
-
-        console.log(
-            "✅ Gmail SMTP connection successful!"
         );
 
         const dueDate = new Date(
@@ -36,150 +28,160 @@ const sendReminderEmail = async (
             year: "numeric",
         });
 
-        const info = await transporter.sendMail({
+        const subjectName =
+            subject?.name || "No subject";
 
-            from: {
-                name: "Study Planner",
-                address: process.env.SMTP_USER,
-            },
+        const result =
+            await brevo.transactionalEmails.sendTransacEmail({
 
-            to: email,
+                sender: {
+                    name: "Study Planner",
+                    email: process.env.BREVO_SENDER_EMAIL,
+                },
 
-            subject:
-                `Study Planner Reminder: ${task.title} is due tomorrow`,
-            headers: {
-                "X-Priority": "3",
-                "X-Mailer": "Study Planner",
-            },
+                to: [
+                    {
+                        email: email,
+                    },
+                ],
 
-            text: `
+                subject:
+                    `Study Planner Reminder: ${task.title} is due tomorrow`,
+
+                textContent: `
 Study Planner Reminder
 
 Your task is due tomorrow!
 
 Task: ${task.title}
 
-Subject: ${subject?.name || "No subject"
-                }
+Subject: ${subjectName}
 
 Due Date: ${dueDate}
 
 Priority: ${task.priority}
 
+${task.description
+    ? `Description: ${task.description}\n`
+    : ""
+}
+
 Don't forget to complete your task! 🚀
-            `,
+                `,
 
-            html: `
-                <div style="
-                    font-family: Arial, sans-serif;
-                    max-width: 600px;
-                    margin: auto;
-                    padding: 30px;
-                    background-color: #f8f7ff;
-                ">
-
+                htmlContent: `
                     <div style="
-                        background-color: white;
+                        font-family: Arial, sans-serif;
+                        max-width: 600px;
+                        margin: auto;
                         padding: 30px;
-                        border-radius: 16px;
+                        background-color: #f8f7ff;
                     ">
 
-                        <h2 style="color: #6d28d9;">
-                            📚 Study Planner
-                        </h2>
-
-                        <h3>
-                            ⏰ Task Reminder
-                        </h3>
-
-                        <p>
-                            Your task is due tomorrow!
-                        </p>
-
                         <div style="
-                            background-color: #f3e8ff;
-                            padding: 20px;
-                            border-radius: 12px;
-                            margin: 20px 0;
+                            background-color: white;
+                            padding: 30px;
+                            border-radius: 16px;
                         ">
 
                             <h2 style="color: #6d28d9;">
-                                ${task.title}
+                                📚 Study Planner
                             </h2>
 
-                            <p>
-                                📚 <strong>Subject:</strong>
-                                ${subject?.name ||
-                "No subject"
-                }
-                            </p>
+                            <h3>
+                                ⏰ Task Reminder
+                            </h3>
 
                             <p>
-                                📅 <strong>Due Date:</strong>
-                                ${dueDate}
+                                Your task is due tomorrow!
                             </p>
 
+                            <div style="
+                                background-color: #f3e8ff;
+                                padding: 20px;
+                                border-radius: 12px;
+                                margin: 20px 0;
+                            ">
+
+                                <h2 style="color: #6d28d9;">
+                                    ${task.title}
+                                </h2>
+
+                                <p>
+                                    📚 <strong>Subject:</strong>
+                                    ${subjectName}
+                                </p>
+
+                                <p>
+                                    📅 <strong>Due Date:</strong>
+                                    ${dueDate}
+                                </p>
+
+                                <p>
+                                    ⭐ <strong>Priority:</strong>
+                                    ${task.priority}
+                                </p>
+
+                            </div>
+
+                            ${
+                                task.description
+                                    ? `
+                                        <p>
+                                            <strong>
+                                                Description:
+                                            </strong>
+                                            ${task.description}
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
                             <p>
-                                ⭐ <strong>Priority:</strong>
-                                ${task.priority}
+                                Don't forget to complete
+                                your task! 🚀
+                            </p>
+
+                            <hr />
+
+                            <p style="
+                                color: #999;
+                                font-size: 13px;
+                            ">
+                                Automatic reminder from
+                                Study Planner.
                             </p>
 
                         </div>
 
-                        ${task.description
-                    ? `
-                                    <p>
-                                        <strong>
-                                            Description:
-                                        </strong>
-
-                                        ${task.description}
-                                    </p>
-                                `
-                    : ""
-                }
-
-                        <p>
-                            Don't forget to complete
-                            your task! 🚀
-                        </p>
-
-                        <hr />
-
-                        <p style="
-                            color: #999;
-                            font-size: 13px;
-                        ">
-                            Automatic reminder from
-                            Study Planner.
-                        </p>
-
                     </div>
-
-                </div>
-            `,
-        });
+                `,
+            });
 
         console.log(
-            "✅ Email sent successfully!"
+            "✅ Reminder email sent successfully!"
         );
 
         console.log(
             "Message ID:",
-            info.messageId
+            result?.messageId
         );
+
+        return result;
 
     } catch (error) {
 
         console.error(
-            "❌ EMAIL ERROR:"
+            "❌ Brevo reminder email failed:"
         );
 
         console.error(
-            error
+            error?.message || error
         );
 
-        throw error;
+        throw new Error(
+            "Failed to send reminder email"
+        );
     }
 };
 
