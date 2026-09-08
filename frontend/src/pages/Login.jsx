@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
+// import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 
 import {
@@ -52,42 +52,42 @@ function Login() {
     };
 
 
-    const handleGoogleLogin = async (
-        credentialResponse
-    ) => {
-        try {
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/auth/google`,
-                {
-                    credential:
-                        credentialResponse.credential,
-                }
-            );
+    // const handleGoogleLogin = async (
+    //     credentialResponse
+    // ) => {
+    //     try {
+    //         const response = await axios.post(
+    //             `${import.meta.env.VITE_API_URL}/api/auth/google`,
+    //             {
+    //                 credential:
+    //                     credentialResponse.credential,
+    //             }
+    //         );
 
-            localStorage.setItem(
-                "token",
-                response.data.token
-            );
+    //         localStorage.setItem(
+    //             "token",
+    //             response.data.token
+    //         );
 
-            localStorage.setItem(
-                "user",
-                JSON.stringify(response.data.user)
-            );
+    //         localStorage.setItem(
+    //             "user",
+    //             JSON.stringify(response.data.user)
+    //         );
 
-            navigate("/dashboard");
+    //         navigate("/dashboard");
 
-        } catch (error) {
-            console.error(
-                "Google login error:",
-                error
-            );
+    //     } catch (error) {
+    //         console.error(
+    //             "Google login error:",
+    //             error
+    //         );
 
-            alert(
-                error.response?.data?.message ||
-                "Google login failed"
-            );
-        }
-    };
+    //         alert(
+    //             error.response?.data?.message ||
+    //             "Google login failed"
+    //         );
+    //     }
+    // };
 
 
     return (
@@ -355,7 +355,7 @@ function Login() {
 
 
 
-                            <Flex
+                            {/* <Flex
                                 align="center"
                                 gap="12px"
                                 my="5px"
@@ -396,7 +396,7 @@ function Login() {
                                         );
                                     }}
                                 />
-                            </Flex>
+                            </Flex> */}
 
 
 
