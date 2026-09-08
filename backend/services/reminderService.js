@@ -109,7 +109,7 @@ const checkUpcomingTasks = async () => {
 const startReminderService = () => {
 
     cron.schedule(
-        "0 9 * * *",
+        "* * * * *",
         async () => {
 
             console.log(
